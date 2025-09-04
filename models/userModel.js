@@ -1,0 +1,50 @@
+import mongoose from 'mongoose'
+import { isGoodPassword } from '../utils/validators.js'
+
+
+const userSchema = new mongoose.Schema({
+
+    name: {
+        type: String,
+        required: true,
+        maxlength: 20,
+        minlength: 2,
+        trim: true,
+        lowercase: true,
+    },
+
+    lastName: {
+        type: String,
+        required: true,
+        maxlength: 20,
+        minlength: 2,
+        trim: true,
+        lowercase: true
+    },
+
+    email: {
+        type: String,
+        required: true,
+        maxlength: 30,
+        minlength: 6,
+        trim: true,
+        lowercase: true,
+        unique: true,
+        match: /^\S+@\S+\.\S+$/,
+    },
+
+    password: {
+        required: true,
+        type: String,
+        validate: {
+            validator: function (value) {
+                return isGoodPassword(value)
+            },
+            message:
+                "Password must be bewteen 6 and 12 characters, with at least one number, one uppercase letter and one lowercase letter"
+        }
+    }
+}, {
+    timestamps: true} )
+
+export default mongoose.model("user", userSchema)
