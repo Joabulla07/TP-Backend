@@ -35,4 +35,6 @@ export const sendToMeService = async (userData) => {
     return {message: 'Correo enviado correctamente', content: data}
 }
 
-//Todo: crear la notificacion al usuario por email
+//Todo: crear la notificacion al usuario por email del formulario
+
+//Todo: crear el mail de envio por forgot password

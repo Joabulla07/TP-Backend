@@ -3,6 +3,10 @@ import bcrypt from "bcryptjs";
 
 
 export const createUserService = async (userData) => {
+    if(!userData){
+        throw new Error("Error en los datos ingresados")
+    }
+
     const { password, email } = userData
     userData.password = await bcrypt.hash(password, 12)
     const userExist = await User.findOne({email})
