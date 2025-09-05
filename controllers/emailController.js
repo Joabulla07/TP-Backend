@@ -16,9 +16,6 @@ export const sendToMe = async (req, res) => {
     }
 };
 
-//Todo: crear forgot password
-// se recibe el mail, se envia notificacion con link al mail para restablecer contraseña
-// crear endpoint del link del mail con un id de usuario donde cambie la contraseña
 
 export const forgetPasswordEmailSend = async(req, res) => {
     try{

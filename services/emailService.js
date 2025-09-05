@@ -45,16 +45,12 @@ export const forgetPasswordEmailService = async(email) => {
         throw new Error("Usuario no encontrado");
     }
 
-    // Genera un token de restablecimiento (asegúrate de tener esta lógica)
-    // const resetToken = user.generatePasswordResetToken();
-    // await user.save({ validateBeforeSave: false });
-    //
-    // const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL}/api/users/reset-password/${user._id}`;
 
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
     const template = await loadEmailTemplate('FORGOT_PASSWORD_RESET_EMAIL', {
-        link: "resetUrl",
+        link: resetUrl,
     });
 
     sendSmtpEmail.sender = {

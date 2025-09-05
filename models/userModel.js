@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import { isGoodPassword } from '../utils/validators.js'
+import bcrypt from "bcryptjs";
 
 
 const userSchema = new mongoose.Schema({
@@ -46,5 +47,11 @@ const userSchema = new mongoose.Schema({
     }
 }, {
     timestamps: true} )
+
+userSchema.pre("save", function (next) {
+    // Encriptamos la password antes de guardarla
+    this.password = bcrypt.hashSync(this.password, 10)
+    next()
+})
 
 export default mongoose.model("user", userSchema)

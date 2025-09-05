@@ -1,7 +1,7 @@
 import User from "../models/userModel.js"
 import {
     createUserService,
-    getUserByIdService
+    getUserByIdService, resetPasswordService
 } from "../services/userService.js";
 
 
@@ -28,5 +28,31 @@ export const getUserById = async (req, res) => {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
         return res.status(500).json({ message: "Error del servidor" });
+    }
+}
+
+
+export const resetPasswordForm = async(req, res) =>{
+    const { id } = req.params;
+    return res.render('CHANGE_PASSWORD_RESET', {
+        user_id: id,
+    });
+}
+
+
+export const resetPassword = async(req, res) => {
+    try{
+        const { id }  = req.params
+        const { new_password } = req.body
+        const result = await resetPasswordService(id, new_password)
+
+        return res.render('PASSWORD_SUCCESSFULLY_CHANGE', {
+            message: result
+        });
+
+    } catch(error){
+        return res.status(500).json({
+            error: 'Ocurrió un error al actualizar la contraseña'
+        });
     }
 }

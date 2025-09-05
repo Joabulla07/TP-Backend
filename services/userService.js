@@ -36,6 +36,14 @@ export const getUserByIdService = async(userData) => {
     }
 }
 
+export const resetPasswordService = async(userId, userData) => {
+    const user = await User.findById(userId)
 
+    if(!user){
+        throw new Error("Usuario no encontrado")
+    }
 
-//todo: forget password
+    user.password = userData;
+    await user.save(); // Esto activará el pre-save hook para hashear la contraseña
+    return { message: "Contraseña cambiada exitosamente"}
+}
