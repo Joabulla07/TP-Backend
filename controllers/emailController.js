@@ -1,4 +1,4 @@
-import {sendToMeService} from "../services/emailService.js";
+import {forgetPasswordEmailService, sendToMeService} from "../services/emailService.js";
 
 
 export const sendToMe = async (req, res) => {
@@ -15,3 +15,21 @@ export const sendToMe = async (req, res) => {
         });
     }
 };
+
+//Todo: crear forgot password
+// se recibe el mail, se envia notificacion con link al mail para restablecer contraseña
+// crear endpoint del link del mail con un id de usuario donde cambie la contraseña
+
+export const forgetPasswordEmailSend = async(req, res) => {
+    try{
+        const { email } = req.body
+        const result = await forgetPasswordEmailService(email)
+
+        return res.status(200).json(result)
+    } catch(error){
+        if(error.message === "Usuario no encontrado"){
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+        return res.status(500).json({ message: "Error del servidor" });
+    }
+}

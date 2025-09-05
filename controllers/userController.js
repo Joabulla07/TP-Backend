@@ -16,7 +16,6 @@ export const createUser = async (req, res) => {
         return res.status(500).json({ message: "Internal server error", error: error.message })
     }
 }
-//Todo: crear forgot password
 
 export const getUserById = async (req, res) => {
     try {
@@ -25,8 +24,7 @@ export const getUserById = async (req, res) => {
 
         return res.status(200).json(user);
     } catch(error) {
-        console.error('Error en getUserById:', error);
-        if(error.message === "User not found") {
+        if(error.message === "Usuario no encontrado") {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
         return res.status(500).json({ message: "Error del servidor" });
