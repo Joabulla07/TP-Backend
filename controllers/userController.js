@@ -46,6 +46,8 @@ export const resetPassword = async(req, res) => {
         const { new_password } = req.body
         const result = await resetPasswordService(id, new_password)
 
+        // Todo: enviar un mail notificando al usuario que se cambio la contraseña
+
         return res.render('PASSWORD_SUCCESSFULLY_CHANGE', {
             message: result
         });

@@ -3,17 +3,16 @@ import { config } from "../core/config.js";
 import User from "../models/userModel.js";
 import {loadEmailTemplate} from "../utils/emailHelper.js";
 
-// Configuración del cliente
+
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = config.brevoApiKey;
 
-// Crear instancia de la API de transacciones
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 export const sendToMeService = async (userData) => {
     const { userEmail, subject, content } = userData
-    // Configurar el correo
+
     console.log(userData)
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
@@ -30,7 +29,6 @@ export const sendToMeService = async (userData) => {
     sendSmtpEmail.subject = subject;
     sendSmtpEmail.textContent = `Usuario: ${userEmail}\n\nMensaje: ${content}`;
 
-    // Enviar el correo
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
     console.log(data)
 
@@ -65,7 +63,6 @@ export const forgetPasswordEmailService = async(email) => {
     sendSmtpEmail.subject = "Restablecer contraseña";
     sendSmtpEmail.htmlContent = template;
 
-    // No olvides enviar el correo
     try {
         await apiInstance.sendTransacEmail(sendSmtpEmail);
         return { success: true, message: 'Correo de restablecimiento enviado' };
@@ -76,5 +73,4 @@ export const forgetPasswordEmailService = async(email) => {
 }
 
 //Todo: crear la notificacion al usuario por email del formulario
-
-//Todo: crear el mail de envio por forgot password
+// Todo: crear notificacion de cambio de contraseña
