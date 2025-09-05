@@ -1,9 +1,6 @@
 import User from "../models/userModel.js"
-import bcrypt from "bcryptjs";
 import {
-    changePasswordService,
     createUserService,
-    getUserByEmailService,
     getUserByIdService
 } from "../services/userService.js";
 
@@ -20,23 +17,6 @@ export const createUser = async (req, res) => {
     }
 }
 //Todo: crear forgot password
-
-// export const changePassword = async (req, res) => {
-//     try {
-//         const userData = req.body
-//         const result = await changePasswordService(userData)
-//
-//         return res.status(200).json({
-//            result
-//         });
-//
-//     } catch (error) {
-//         res.status(500).json({
-//             message: "Error updating password",
-//             error: error.message
-//         });
-//     }
-// }
 
 export const getUserById = async (req, res) => {
     try {

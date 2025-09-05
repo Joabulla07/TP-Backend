@@ -8,11 +8,11 @@ export const createUserService = async (userData) => {
     const userExist = await User.findOne({email})
 
     if(userExist){
-        throw new Error(`User with ${email} already exists`)
+        throw new Error(`Usuario ${email} ya existe`)
     }
 
     await userData.save()
-    return { message: "User created" }
+    return { message: "Usuario creado" }
 }
 
 export const getUserByIdService = async(userData) => {
@@ -21,7 +21,7 @@ export const getUserByIdService = async(userData) => {
     const user = await User.findById(userId)
 
     if(!user){
-        throw new Error("Not user found")
+        throw new Error("Usuario no encontrado")
     }
 
     return {
@@ -32,24 +32,4 @@ export const getUserByIdService = async(userData) => {
     }
 }
 
-// export const changePasswordService = async (userData) => {
-//     const { userId, password } = userData
-//
-//     if (!password) {
-//         throw new Error("New password is required");
-//     }
-//
-//     const newPassword = await bcrypt.hash(password, 12)
-//
-//     const updatedUser  = await User.findByIdAndUpdate(
-//         userId,
-//         {password: newPassword},
-//         {new: true, runValidators: true}
-//     )
-//
-//     if (!updatedUser) {
-//         throw new Error("User not found");
-//     }
-//
-//     return {message: "Password updated successfully"}
-// }
+//todo: forget password
