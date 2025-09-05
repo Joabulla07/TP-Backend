@@ -1,20 +1,37 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
+import jwt from 'jsonwebtoken'
 
 
 export const loginService = async (userData) => {
-    if(!userData){
-        throw new Error("Error en los datos ingresados")
+    const { email, password } = userData
+
+    if(!(email && password)){
+        const error = new Error("There's a missing field")
+        error.statusCode = 400;
+        throw error;
     }
 
-    const { email, password } = userData
-    const user = await User.findOne({email})
+    const userFound = await User.findOne({ email })
 
-    if (!user) throw new Error("Credenciales inválidas")
+    if(!userFound){
+        const error = new Error("User or password is incorrect")
+        error.statusCode = 400
+        throw error
+    }
 
-    const ok = bcrypt.compareSync(password, user.password);
+    if(!bcrypt.compareSync(password, userFound.password)){
+        const error = new Error("User or password is incorrect")
+        error.statusCode = 400
+        throw error
+    }
 
-    if (!ok) throw new Error("Credenciales inválidas")
+    const payload = {
+        userId: userFound._id,
+        userEmail: userFound.email
+    }
 
-    return {message: "Login correcto", content: {userId: user._id, name: user.name, lastName: user.lastName}}
+    const token = jwt.sign(payload, "secret", { expiresIn: "1h" })
+
+    return {message: "Logged in", token}
 }
