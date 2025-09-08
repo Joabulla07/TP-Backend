@@ -11,7 +11,7 @@ apiKey.apiKey = config.brevoApiKey;
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 export const sendToMeService = async (userData) => {
-    const { userEmail, subject, content } = userData
+    const { name, email, telefono, consultas, message } = userData
 
     console.log(userData)
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
@@ -26,8 +26,8 @@ export const sendToMeService = async (userData) => {
         name: 'GestionAR'
     }];
 
-    sendSmtpEmail.subject = subject;
-    sendSmtpEmail.textContent = `Usuario: ${userEmail}\n\nMensaje: ${content}`;
+    sendSmtpEmail.subject = "Formulario de Contacto";
+    sendSmtpEmail.textContent = `Usuario Email: ${email}\n\nNombre: ${name}\n\nTelefono: ${telefono}\n\nConsultas: ${consultas}\n\nMensaje: ${message}`;
 
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
     console.log(data)

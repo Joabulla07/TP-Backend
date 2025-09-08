@@ -7,6 +7,7 @@ import {emailRoute} from "./routers/emailRouter.js";
 import session from 'express-session'
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cors from 'cors';
 
 const app = express()
 const PORT = 3000
@@ -15,6 +16,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 connectDB();
+
+// Add CORS configuration
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); // Asegúrate de tener una carpeta 'views' en tu proyecto
