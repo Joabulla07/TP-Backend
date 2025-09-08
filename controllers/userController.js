@@ -3,6 +3,8 @@ import {
     createUserService,
     getUserByIdService, resetPasswordService
 } from "../services/userService.js";
+import {notificationChangePasswordEmailService} from "../services/emailService.js";
+import logger from "../core/logger.js";
 
 
 export const createUser = async (req, res) => {
@@ -31,7 +33,7 @@ export const getUserById = async (req, res) => {
     }
 }
 
-
+// este metodo renderiza el form cuando apretas el link enviado
 export const resetPasswordForm = async(req, res) =>{
     const { id } = req.params;
     return res.render('CHANGE_PASSWORD_RESET', {
@@ -44,17 +46,18 @@ export const resetPassword = async(req, res) => {
     try{
         const { id }  = req.params
         const { new_password } = req.body
+        logger.info('Cambiando la contraseña del usuario');
+
         const result = await resetPasswordService(id, new_password)
 
-        // Todo: enviar un mail notificando al usuario que se cambio la contraseña
+        const result2 = await notificationChangePasswordEmailService(result.email)
 
         return res.render('PASSWORD_SUCCESSFULLY_CHANGE', {
             message: result
         });
 
     } catch(error){
-        return res.status(500).json({
-            error: 'Ocurrió un error al actualizar la contraseña'
-        });
+        logger.error('Error en resetPassword:', error);
+        return res.status(500).json({ error: error.message });
     }
 }

@@ -1,5 +1,6 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
+import logger from "../core/logger.js";
 
 
 export const createUserService = async (userData) => {
@@ -43,7 +44,14 @@ export const resetPasswordService = async(userId, userData) => {
         throw new Error("Usuario no encontrado")
     }
 
+    const userEmail = user.email;
+    logger.info("Encontrado: ", userEmail);
+
     user.password = userData;
     await user.save(); // Esto activará el pre-save hook para hashear la contraseña
-    return { message: "Contraseña cambiada exitosamente"}
+
+    return {
+        message: "Contraseña cambiada exitosamente",
+        email: userEmail
+    };
 }

@@ -42,7 +42,7 @@ export const forgetPasswordEmailService = async(email) => {
         throw new Error("Usuario no encontrado");
     }
 
-    const resetUrl = `${process.env.FRONTEND_URL}/api/users/reset-password/${user._id}`;
+    const resetUrl = `${process.env.FRONTEND_URL}/api/user/resetPasswordForm/${user._id}`;
 
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
@@ -99,5 +99,31 @@ export const notificationContactFormEmailService = async (userData) => {
         throw new Error('Error al enviar el correo');
     }
 }
-//Todo: crear la notificacion al usuario por email del formulario
-// Todo: crear notificacion de cambio de contraseña
+
+
+export const notificationChangePasswordEmailService = async (email) => {
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+    const template = await loadEmailTemplate('CHANGE_PASSWORD_EMAIL', {
+        user_email: email });
+
+    sendSmtpEmail.sender = {
+        name: 'GestionAR',
+        email: 'joannabbado4748@gmail.com'
+    };
+
+    sendSmtpEmail.to = [{
+        email: email
+    }];
+
+    sendSmtpEmail.subject = "Cambio de contraseña exitoso";
+    sendSmtpEmail.htmlContent = template;
+
+    try {
+        await apiInstance.sendTransacEmail(sendSmtpEmail);
+        return { success: true, message: 'Correo enviado' };
+    } catch (error) {
+        console.error('Error al enviar el correo:', error);
+        throw new Error('Error al enviar el correo');
+    }
+}
