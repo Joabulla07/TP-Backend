@@ -13,7 +13,6 @@ const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 export const sendToMeService = async (userData) => {
     const { name, email, telefono, consultas, message } = userData
 
-    console.log(userData)
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
     sendSmtpEmail.sender = {
