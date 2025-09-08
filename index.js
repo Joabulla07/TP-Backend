@@ -8,14 +8,29 @@ import session from 'express-session'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
+import logger from './core/logger.js';
 
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Crear directorio de logs si no existe
+import fs from 'fs';
+const logDir = path.join(__dirname, 'logs');
+if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir);
+}
+
+// Conectar a la base de datos
 connectDB();
+
+// Middleware para logging de peticiones
+app.use((req, res, next) => {
+    logger.info(`${req.method} ${req.originalUrl} - ${req.ip}`);
+    next();
+});
 
 // Add CORS configuration
 app.use(cors({
@@ -25,28 +40,59 @@ app.use(cors({
 }));
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views')); // Asegúrate de tener una carpeta 'views' en tu proyecto
+app.set('views', path.join(__dirname, 'views'));
 
 // Middleware para archivos estáticos (CSS, JS, imágenes)
 app.use(express.static('public'));
 
-
 app.use(bodyParser.json())
-
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(
     session({
-        secret: "secret", // Dato unico de nuestro sistema
-        resave: false, // Evita que la sesion se vuelva a guardar si no hay datos
-        saveUninitialized: false, // Evita que se guarde una sesion no inicializada
+        secret: process.env.SESSION_SECRET || "secret", // Usar variable de entorno
+        resave: false,
+        saveUninitialized: false,
     })
 )
 
+// Rutas
 app.use("/api/user", userRoute)
 app.use("/api/", loginRoute)
 app.use('/api/email', emailRoute);
 
-app.listen(PORT, () => {
-    console.log(`Server running at ${PORT}`)
-})
+// Middleware para manejo de errores
+app.use((err, req, res, next) => {
+    logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+    
+    // Respuesta al cliente
+    res.status(err.status || 500).json({
+        error: {
+            message: err.message || 'Error interno del servidor',
+            ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+        }
+    });
+});
+
+const server = app.listen(PORT, () => {
+    logger.info(`Servidor corriendo en el puerto ${PORT}`);    
+    logger.info(`Entorno: ${process.env.NODE_ENV || 'development'}`);
+});
+
+// Manejador de errores no capturados
+process.on('unhandledRejection', (err) => {
+    logger.error('UNHANDLED REJECTION! ');
+    logger.error(err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    });
+});
+
+process.on('SIGTERM', () => {
+    logger.info('');
+    server.close(() => {
+        logger.info('');
+    });
+});
+
+export { app };

@@ -1,12 +1,13 @@
 import {forgetPasswordEmailService, sendToMeService} from "../services/emailService.js";
+import logger from "../core/logger.js";
 
 
 export const sendToMe = async (req, res) => {
     try {
-        console.log("llamando a sendtome")
+        logger.info("llamando a sendtome")
         const userData = req.body;
         const result = await sendToMeService(userData)
-        console.log("result", result)
+        logger.info("result", result)
 
         return  res.status(200).json(result);
     } catch (error) {

@@ -2,6 +2,7 @@ import SibApiV3Sdk from 'sib-api-v3-sdk';
 import { config } from "../core/config.js";
 import User from "../models/userModel.js";
 import {loadEmailTemplate} from "../utils/emailHelper.js";
+import logger from "../core/logger.js";
 
 
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
@@ -14,8 +15,8 @@ export const sendToMeService = async (userData) => {
     const { name, email, telefono, consultas, message } = userData
 
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-    console.log("ingresando a sendToMeService")
-    console.log("payload: ", userData)
+    logger.info("ingresando a sendToMeService")
+    logger.info("payload: ", userData)
 
     sendSmtpEmail.sender = {
         name: 'GestionAR',
@@ -31,7 +32,7 @@ export const sendToMeService = async (userData) => {
     sendSmtpEmail.textContent = `Usuario Email: ${email}\n\nNombre: ${name}\n\nTelefono: ${telefono}\n\nConsultas: ${consultas}\n\nMensaje: ${message}`;
 
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log(data)
+    logger.info(data)
 
     return {message: 'Correo enviado correctamente', content: data}
 }
