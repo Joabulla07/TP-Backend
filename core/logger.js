@@ -16,9 +16,14 @@ const levels = {
 
 // Nivel de log según el entorno
 const level = () => {
+    // Si hay una variable de entorno LOG_LEVEL configurada, la usamos
+    if (process.env.LOG_LEVEL) {
+        return process.env.LOG_LEVEL.toLowerCase();
+    }
+    
+    // Si no, usamos 'info' como nivel por defecto en producción
     const env = process.env.NODE_ENV || 'development';
-    const isDevelopment = env === 'development';
-    return isDevelopment ? 'debug' : 'info';
+    return env === 'development' ? 'debug' : 'info';
 };
 
 // Colores para la consola
