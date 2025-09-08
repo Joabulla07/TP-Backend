@@ -15,8 +15,6 @@ export const sendToMeService = async (userData) => {
     const { name, email, telefono, consultas, message } = userData
 
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-    logger.info("ingresando a sendToMeService")
-    logger.info("payload: ", userData)
 
     sendSmtpEmail.sender = {
         name: 'GestionAR',
@@ -32,7 +30,6 @@ export const sendToMeService = async (userData) => {
     sendSmtpEmail.textContent = `Usuario Email: ${email}\n\nNombre: ${name}\n\nTelefono: ${telefono}\n\nConsultas: ${consultas}\n\nMensaje: ${message}`;
 
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    logger.info(data)
 
     return {message: 'Correo enviado correctamente', content: data}
 }
@@ -74,5 +71,33 @@ export const forgetPasswordEmailService = async(email) => {
     }
 }
 
+
+export const notificationContactFormEmailService = async (userData) => {
+    const { name, email} = userData
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+    const template = await loadEmailTemplate('NOTIFICATION_CONTACT_FORM', {
+        user_email: name });
+
+    sendSmtpEmail.sender = {
+        name: 'GestionAR',
+        email: 'joannabbado4748@gmail.com'
+    };
+
+    sendSmtpEmail.to = [{
+        email: email
+    }];
+
+    sendSmtpEmail.subject = "Recibimos tu consulta";
+    sendSmtpEmail.htmlContent = template;
+
+    try {
+        await apiInstance.sendTransacEmail(sendSmtpEmail);
+        return { success: true, message: 'Correo enviado' };
+    } catch (error) {
+        console.error('Error al enviar el correo:', error);
+        throw new Error('Error al enviar el correo');
+    }
+}
 //Todo: crear la notificacion al usuario por email del formulario
 // Todo: crear notificacion de cambio de contraseña
