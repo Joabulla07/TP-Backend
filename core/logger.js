@@ -1,47 +1,37 @@
 import winston from 'winston';
+import { Transform } from 'stream';
 
-// Niveles de log
-const levels = {
-    error: 0,
-    warn: 1,
-    info: 2,
-    http: 3,
-    debug: 4,
-};
-
-// Nivel de log según el entorno
-const level = () => {
-    return process.env.LOG_LEVEL?.toLowerCase() || 'debug';
-};
-
-// Colores para la consola
-const colors = {
-    error: 'red',
-    warn: 'yellow',
-    info: 'green',
-    http: 'magenta',
-    debug: 'blue',
-};
-
-winston.addColors(colors);
-
-// Formato para la consola
-const format = winston.format.combine(
-    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    winston.format.colorize({ all: true }),
-    winston.format.printf(
-        (info) => `[${info.timestamp}] ${info.level}: ${info.message}`,
-    )
-);
-
-// Crear el logger solo con consola
+// Configuración simple que muestra todos los niveles
 const logger = winston.createLogger({
-    level: level(),
-    levels,
-    format,
+    level: 'debug', // Muestra todos los niveles desde debug hacia arriba
+    format: winston.format.combine(
+        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        winston.format.colorize(),
+        winston.format.printf(
+            (info) => `[${info.timestamp}] ${info.level}: ${info.message}`
+        )
+    ),
     transports: [
-        new winston.transports.Console()
+        new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.colorize({ all: true })
+            )
+        })
     ]
 });
+
+// Forzar la salida de logs a stdout/stderr
+const logToStdout = new Transform({
+    transform(chunk, encoding, callback) {
+        process.stdout.write(chunk);
+        callback();
+    }
+});
+
+logger.stream = {
+    write: (message) => {
+        logger.info(message.trim());
+    }
+};
 
 export default logger;

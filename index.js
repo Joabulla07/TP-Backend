@@ -16,19 +16,13 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Crear directorio de logs si no existe
-import fs from 'fs';
-const logDir = path.join(__dirname, 'logs');
-if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir);
-}
 
 // Conectar a la base de datos
 connectDB();
 
 // Middleware para logging de peticiones
 app.use((req, res, next) => {
-    logger.info(`${req.method} ${req.originalUrl} - ${req.ip}`);
+    logger.info(`[${req.method}] ${req.originalUrl}`);
     next();
 });
 
