@@ -3,8 +3,10 @@ import {forgetPasswordEmailService, sendToMeService} from "../services/emailServ
 
 export const sendToMe = async (req, res) => {
     try {
+        console.log("llamando a sendtome")
         const userData = req.body;
         const result = await sendToMeService(userData)
+        console.log("result", result)
 
         return  res.status(200).json(result);
     } catch (error) {

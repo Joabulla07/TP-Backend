@@ -14,6 +14,8 @@ export const sendToMeService = async (userData) => {
     const { name, email, telefono, consultas, message } = userData
 
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+    console.log("ingresando a sendToMeService")
+    console.log("payload: ", userData)
 
     sendSmtpEmail.sender = {
         name: 'GestionAR',
