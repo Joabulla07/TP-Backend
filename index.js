@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 
 // Add CORS configuration
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://gestionarreactapptp2.netlify.app'],
+    origin: ['http://localhost:5173', 'https://gestionarreactapptp2.netlify.app', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -52,7 +52,7 @@ app.use(
 
 // Rutas
 app.use("/api/user", userRoute)
-app.use("/api/", loginRoute)
+app.use("/api", loginRoute)
 app.use('/api/email', emailRoute);
 
 // Middleware para manejo de errores

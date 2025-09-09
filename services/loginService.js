@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken'
+import logger from "../core/logger.js";
 
 
 export const loginService = async (userData) => {
@@ -12,7 +13,8 @@ export const loginService = async (userData) => {
         throw error;
     }
 
-    const userFound = await User.findOne({ email })
+    const userFound = await User.findOne({email})
+    logger.info(userFound)
 
     if(!userFound){
         const error = new Error("User or password is incorrect")
@@ -22,7 +24,7 @@ export const loginService = async (userData) => {
 
     if(!bcrypt.compareSync(password, userFound.password)){
         const error = new Error("User or password is incorrect")
-        error.statusCode = 400
+        error.statusCode = 401
         throw error
     }
 
