@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import logger from "../core/logger.js";
+import {createUserNotificationEmail} from "./emailService.js";
 
 
 export const createUserService = async (userData) => {
@@ -16,8 +17,9 @@ export const createUserService = async (userData) => {
         throw new Error(`Usuario ${email} ya existe`)
     }
 
-    await userData.save()
-    return { message: "Usuario creado" }
+    const user = await userData.save()
+    await createUserNotificationEmail(email)
+    return { message: "Usuario creado", content: user}
 }
 
 export const getUserByIdService = async(userData) => {

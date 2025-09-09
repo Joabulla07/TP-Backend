@@ -127,3 +127,30 @@ export const notificationChangePasswordEmailService = async (email) => {
         throw new Error('Error al enviar el correo');
     }
 }
+
+export const createUserNotificationEmail = async(email) => {
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+    const template = await loadEmailTemplate('CREATE_USER_EMAIL', {
+        user_email: email });
+
+    sendSmtpEmail.sender = {
+        name: 'GestionAR',
+        email: 'joannabbado4748@gmail.com'
+    };
+
+    sendSmtpEmail.to = [{
+        email: email
+    }];
+
+    sendSmtpEmail.subject = "Bienvenido a GestionAr";
+    sendSmtpEmail.htmlContent = template;
+
+    try {
+        await apiInstance.sendTransacEmail(sendSmtpEmail);
+        return { success: true, message: 'Correo enviado' };
+    } catch (error) {
+        console.error('Error al enviar el correo:', error);
+        throw new Error('Error al enviar el correo');
+    }
+}
